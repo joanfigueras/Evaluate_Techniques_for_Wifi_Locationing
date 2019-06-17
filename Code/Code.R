@@ -123,12 +123,12 @@ validationh2o <- as.h2o(validation)
 combinedh2o <- as.h2o(combined)
 
 buildingsmodel <-
-      h2o.randomForest(
-            x = which(grepl("WAP", x = colnames(trainingh2o))),
-            y = which(colnames(trainingh2o) == "BUILDINGID"),
-            training_frame = trainingh2o,
-            seed = 1,
-            ntrees = 100,nfolds = 5)
+  h2o.randomForest(
+    x = which(grepl("WAP", x = colnames(trainingh2o))),
+    y = which(colnames(trainingh2o) == "BUILDINGID"),
+    training_frame = trainingh2o,
+    seed = 1,
+    ntrees = 100,nfolds = 5)
 
 # buildingsmodel <- readRDS("Models/buildingsmodel.rds")
 
@@ -144,20 +144,20 @@ testingbuildingh2o <- lapply(testingbuilding,as.h2o)
 combinedbuildingh2o <- lapply(combinedbuilding,as.h2o)
 
 floorsmodel <-
-    lapply(trainingbuildingh2o,function(x)
-        h2o.randomForest(
-            x = which(grepl("WAP", x = colnames(x))),
-            y = which(colnames(x) == "FLOOR"),
-            training_frame = x,
-            seed = 1,
-            ntrees = 100,nfolds = 5))
+  lapply(trainingbuildingh2o,function(x)
+    h2o.randomForest(
+      x = which(grepl("WAP", x = colnames(x))),
+      y = which(colnames(x) == "FLOOR"),
+      training_frame = x,
+      seed = 1,
+      ntrees = 100,nfolds = 5))
 floorsmodel[[2]] <- 
-        h2o.randomForest(
-          x = which(grepl("WAP", x = colnames(combinedbuildingh2o[[2]]))),
-          y = which(colnames(combinedbuildingh2o[[2]]) == "FLOOR"),
-          training_frame = combinedbuildingh2o[[2]],
-          seed = 1,
-          ntrees = 100,nfolds = 5)
+  h2o.randomForest(
+    x = which(grepl("WAP", x = colnames(combinedbuildingh2o[[2]]))),
+    y = which(colnames(combinedbuildingh2o[[2]]) == "FLOOR"),
+    training_frame = combinedbuildingh2o[[2]],
+    seed = 1,
+    ntrees = 100,nfolds = 5)
 # floorsmodel <- readRDS("Models/floorsmodel.rds")
 
 #####Model Latitude#####
@@ -187,14 +187,14 @@ latitudemodel <-
 
 #####Model Longitude####
 longitudemodel <-
-    lapply(trainingfloorh2o,function(x)
-          lapply(x,function(x)
-               h2o.randomForest(
-                        x = which(grepl("WAP|LATITUDE", x = colnames(x))),
-                        y = which(colnames(x) == "LONGITUDE"),
-                        training_frame = x,
-                        seed = 1,
-                        ntrees = 100,nfolds = 5)))
+  lapply(trainingfloorh2o,function(x)
+    lapply(x,function(x)
+      h2o.randomForest(
+        x = which(grepl("WAP|LATITUDE", x = colnames(x))),
+        y = which(colnames(x) == "LONGITUDE"),
+        training_frame = x,
+        seed = 1,
+        ntrees = 100,nfolds = 5)))
 
 # longitudemodel <- readRDS("Models/longitudemodelmarshmello.rds")
 
@@ -231,20 +231,20 @@ latitudepebuildingsmodel <- c()
 for (j in 1:length(testingfloorh2o)) {
   for (i in 1:length(testingfloorh2o[[j]])) {
     latitudepred <- as.data.frame(h2o.predict(object = latitudemodel[[j]][[i]],
-                                          newdata = testingfloorh2o[[j]][[i]]))
+                                              newdata = testingfloorh2o[[j]][[i]]))
     
     testingfloor[[j]][[i]]$LATITUDE <- latitudepred$predict
     
     latitudepebuildingsmodel <- rbind(as.data.frame(latitudepebuildingsmodel),
-                                   postResample(testingfloor[[j]][[i]]$LATITUDE,
-                                                testingfloor[[j]][[i]]$LATITUDEreal))
+                                      postResample(testingfloor[[j]][[i]]$LATITUDE,
+                                                   testingfloor[[j]][[i]]$LATITUDEreal))
   }
 }
 
 naming <- c()
 for(i in 1:length(testingfloor)){
-naming <- c(naming,paste(rep(names(testingfloor[i]),
-                             times = length(names(testingfloor[[i]]))),names(testingfloor[[i]])))
+  naming <- c(naming,paste(rep(names(testingfloor[i]),
+                               times = length(names(testingfloor[[i]]))),names(testingfloor[[i]])))
 }
 colnames(latitudepebuildingsmodel) <- c("RMSE","Rsquared","MAE")
 rownames(latitudepebuildingsmodel) <- naming
@@ -256,13 +256,13 @@ for (j in 1:length(testinglatitude)) {
   
   for (i in 1:length(testinglatitude[[j]])) {
     longitudepred <- as.data.frame(h2o.predict(object = longitudemodel[[j]][[i]],
-                                              newdata = testinglatitude[[j]][[i]]))
+                                               newdata = testinglatitude[[j]][[i]]))
     
     testingfloor[[j]][[i]]$LONGITUDE <- longitudepred$predict
     
     longitudepebuildingsmodel <- rbind(as.data.frame(longitudepebuildingsmodel),
-                                   postResample(testingfloor[[j]][[i]]$LONGITUDE,
-                                                testingfloor[[j]][[i]]$LONGITUDEreal))
+                                       postResample(testingfloor[[j]][[i]]$LONGITUDE,
+                                                    testingfloor[[j]][[i]]$LONGITUDEreal))
   }
 }
 
