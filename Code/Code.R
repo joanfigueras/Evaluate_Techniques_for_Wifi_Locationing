@@ -297,7 +297,7 @@ histogram(as.numeric(bigerrors$FLOOR))
 histogram(as.numeric(bigerrors$BUILDINGID))
 
 #####Models####
-saveRDS(buildingsmodel,file = "Models/buildingsmodelsomecombined.rds")
-saveRDS(longitudemodel,file = "Models/longitudemodelsomecombined.rds")
-saveRDS(latitudemodel,file = "Models/latitudemodelsomecombined.rds")
-saveRDS(floorsmodel,file = "Models/floorsmodelsomecombined.rds")
+# saveRDS(buildingsmodel,file = "Models/buildingsmodelsomecombined.rds")
+# saveRDS(longitudemodel,file = "Models/longitudemodelsomecombined.rds")
+# saveRDS(latitudemodel,file = "Models/latitudemodelsomecombined.rds")
+# saveRDS(floorsmodel,file = "Models/floorsmodelsomecombined.rds")
